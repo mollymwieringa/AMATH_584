@@ -1,0 +1,371 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>hwk2</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-10-21"><meta name="DC.source" content="hwk2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">AMATH 584 Homework 2: Yale Faces B</a></li><li><a href="#2">Load data</a></li><li><a href="#3">Perfrom a singular value decomposition on the cropped images</a></li><li><a href="#4">PCA analysis- cropped</a></li><li><a href="#5">Perform a singular value decomposition on the uncropped images</a></li><li><a href="#6">PCA analysis- uncropped</a></li><li><a href="#7">Rank-based Reconstructions- uncropped</a></li></ul></div><h2 id="1">AMATH 584 Homework 2: Yale Faces B</h2><pre class="codeinput">clear; clc; close <span class="string">all</span>
+</pre><h2 id="2">Load data</h2><pre class="codeinput"><span class="comment">% Make big, emtpy data matrices</span>
+A_cropped = [];
+A_uncropped = [];
+
+<span class="comment">% Set up image dimensions</span>
+dim1 = 80;
+dim2 = 70;
+
+<span class="comment">% Begin file reading iteration for the cropped images</span>
+count = 1;
+<span class="keyword">for</span> i = 1:39
+    path = [<span class="string">'CroppedYale/yaleB'</span> num2str(i, <span class="string">'%02.f'</span>)];
+    P = path;
+    addpath(genpath(P));
+    dict = dir(P);
+
+    <span class="keyword">for</span> j = 1:numel(dict)
+        file = dict(j).name;
+        <span class="keyword">if</span> length(file) &gt; 3
+            image = imread(file);
+            data = imresize(double(im2gray(imread(file))), [dim1,dim2]);
+            A_cropped(:,count) = data(:)';
+            count = count + 1;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% Begin the file reading iteration for the uncropped images</span>
+
+<span class="comment">%expressions = ['centerlight','glasses','happy','leftlight','noglasses',...</span>
+<span class="comment">%    'normal','rightlight','sad','sleepy','surprised','wink'];</span>
+
+count = 1;
+<span class="keyword">for</span> i = 1:15
+    path = <span class="string">'yalefaces_uncropped/yalefaces'</span>;
+    P = path;
+    addpath(genpath(P));
+    dict = dir(P);
+
+    <span class="keyword">for</span> j=1:numel(dict)
+        file = dict(j).name;
+        <span class="keyword">if</span> length(file) &gt; 3
+            image = imread(file);
+            data = imresize(double(im2gray(imread(file))), [dim1,dim2]);
+            A_uncropped(:,count) = data(:)';
+            count = count + 1;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+</pre><h2 id="3">Perfrom a singular value decomposition on the cropped images</h2><pre class="codeinput">[U_c,S_c,V_st_c] = svd(A_cropped);
+
+<span class="comment">% U represents</span>
+<span class="comment">% S represents</span>
+<span class="comment">% V_st represents</span>
+
+<span class="comment">% Plot the first few columns of U</span>
+figure(1);
+<span class="keyword">for</span> i = 1:8
+    col = U_c(:, i);
+    new_image = reshape(col, [dim1, dim2]);
+    subplot(2,4,i);
+    pcolor(flip(new_image)), shading <span class="string">interp</span>, colormap <span class="string">gray</span>
+<span class="keyword">end</span>
+<span class="comment">% suptitle('Eigenfaces, Cropped')</span>
+</pre><img vspace="5" hspace="5" src="hwk2_01.png" alt=""> <h2 id="4">PCA analysis- cropped</h2><pre class="codeinput">[~,~,Spca] = pca(A_cropped);
+eigvals_c = Spca;
+<span class="comment">%eigvals_c = svd(C_c);</span>
+
+<span class="comment">%N_st = trace(C_c)^2/trace(C_c.^2);</span>
+
+<span class="comment">% Plot the eigenvalue spectrum</span>
+N_st = dim1*dim2;
+err_c = eigvals_c*sqrt((2/N_st));
+
+figure(2);
+subplot(2,1,1);
+errorbar(eigvals_c(1:20), err_c(1:20), <span class="string">'linewi'</span>, 2)
+ylim([0 12E6]);
+ylabel(<span class="string">'|\lambda|'</span>)
+title(<span class="string">'Eigenvalue Spectrum, Cropped'</span>)
+<span class="comment">% subplot(2,1,2);</span>
+<span class="comment">% semilogy(eigvals_c(1:20), 'linewi', 2)</span>
+<span class="comment">% ylim([0 10E7]);</span>
+<span class="comment">% ylabel('|\lambda|')</span>
+</pre><img vspace="5" hspace="5" src="hwk2_02.png" alt=""> <h2 id="5">Perform a singular value decomposition on the uncropped images</h2><pre class="codeinput">[U_uc,S_uc,V_st_uc] = svd(A_uncropped);
+
+<span class="comment">% U represents</span>
+<span class="comment">% S represents</span>
+<span class="comment">% V_st represents</span>
+
+<span class="comment">% Plot the first few columns of U</span>
+figure(3);
+<span class="keyword">for</span> i = 1:8
+    col = U_uc(:, i);
+    new_image = reshape(col, [dim1, dim2]);
+    subplot(2,4,i);
+    pcolor(flip(new_image)), shading <span class="string">interp</span>, colormap <span class="string">gray</span>
+<span class="keyword">end</span>
+<span class="comment">%suptitle('Eigenfaces, Uncropped')</span>
+</pre><img vspace="5" hspace="5" src="hwk2_03.png" alt=""> <h2 id="6">PCA analysis- uncropped</h2><pre class="codeinput"><span class="comment">% Calculated SVD on the covariance matrix</span>
+
+[~,~,Spcau] = pca(A_uncropped);
+eigvals_uc = Spcau;
+
+N_st = dim1*dim2;
+<span class="comment">%N_st = trace(C_uc)^2/trace(C_uc.^2);</span>
+
+<span class="comment">% Plot the eigenvalue spectrum</span>
+err_uc = eigvals_uc*sqrt((2/N_st));
+
+figure(2);
+subplot(2,1,2);
+errorbar(eigvals_uc(1:20), err_uc(1:20), <span class="string">'linewi'</span>, 2)
+ylim([0 12E6])
+ylabel(<span class="string">'|\lambda|'</span>)
+title(<span class="string">'Eigenvalue Spectrum, Uncropped'</span>)
+<span class="comment">% subplot(2,1,2);</span>
+<span class="comment">% semilogy(eigvals_uc(1:20), 'linewi', 2)</span>
+<span class="comment">% ylim([0 10E7]);</span>
+<span class="comment">% ylabel('|\lambda|')</span>
+</pre><img vspace="5" hspace="5" src="hwk2_04.png" alt=""> <h2 id="7">Rank-based Reconstructions- uncropped</h2><pre class="codeinput">figure();
+count = 1;
+r = [5 10 20 100 500 700];
+<span class="keyword">for</span> ri= 1:length(r) <span class="comment">% Truncation value</span>
+    face = 42;
+     Xapprox_c  = U_c(:,1:r(ri)) * S_c(1:r(ri),1:r(ri)) * V_st_c(:,1:r(ri))';
+     Xapprox_uc = U_uc(:,1:r(ri))*S_uc(1:r(ri),1:r(ri))*V_st_uc(:,1:r(ri))'; <span class="comment">% Approx. image</span>
+    face_c = reshape(Xapprox_c(:,face), [dim1, dim2]);
+    face_uc = reshape(Xapprox_uc(:,face),[dim1,dim2]);
+    subplot(2,length(r),count)
+    imagesc(face_c), axis <span class="string">off</span>, colormap <span class="string">gray</span>;
+    title([<span class="string">'r='</span>,num2str(r(ri),<span class="string">'%d'</span>) ]);
+    subplot(2,length(r), count+length(r))
+    imagesc(face_uc), axis <span class="string">off</span>, colormap <span class="string">gray</span>;
+    count = count + 1;
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="hwk2_05.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% AMATH 584 Homework 2: Yale Faces B
+
+clear; clc; close all
+
+%% Load data
+
+% Make big, emtpy data matrices
+A_cropped = [];
+A_uncropped = []; 
+
+% Set up image dimensions
+dim1 = 80;
+dim2 = 70;
+
+% Begin file reading iteration for the cropped images
+count = 1;
+for i = 1:39
+    path = ['CroppedYale/yaleB' num2str(i, '%02.f')];
+    P = path;
+    addpath(genpath(P));
+    dict = dir(P);
+    
+    for j = 1:numel(dict)
+        file = dict(j).name;
+        if length(file) > 3
+            image = imread(file);
+            data = imresize(double(im2gray(imread(file))), [dim1,dim2]); 
+            A_cropped(:,count) = data(:)';
+            count = count + 1;
+        end 
+    end 
+end 
+
+% Begin the file reading iteration for the uncropped images
+
+%expressions = ['centerlight','glasses','happy','leftlight','noglasses',...
+%    'normal','rightlight','sad','sleepy','surprised','wink'];
+
+count = 1;
+for i = 1:15
+    path = 'yalefaces_uncropped/yalefaces';
+    P = path;
+    addpath(genpath(P));
+    dict = dir(P);
+    
+    for j=1:numel(dict)
+        file = dict(j).name;
+        if length(file) > 3
+            image = imread(file);
+            data = imresize(double(im2gray(imread(file))), [dim1,dim2]); 
+            A_uncropped(:,count) = data(:)';
+            count = count + 1;
+        end
+    end
+    
+end 
+%% Perfrom a singular value decomposition on the cropped images
+
+[U_c,S_c,V_st_c] = svd(A_cropped);
+
+% U represents
+% S represents 
+% V_st represents 
+
+% Plot the first few columns of U
+figure(1); 
+for i = 1:8
+    col = U_c(:, i); 
+    new_image = reshape(col, [dim1, dim2]); 
+    subplot(2,4,i);
+    pcolor(flip(new_image)), shading interp, colormap gray
+end 
+% suptitle('Eigenfaces, Cropped')
+
+%% PCA analysis- cropped
+
+[~,~,Spca] = pca(A_cropped);
+eigvals_c = Spca;
+%eigvals_c = svd(C_c);
+
+%N_st = trace(C_c)^2/trace(C_c.^2);
+
+% Plot the eigenvalue spectrum
+N_st = dim1*dim2;
+err_c = eigvals_c*sqrt((2/N_st));
+
+figure(2);
+subplot(2,1,1);
+errorbar(eigvals_c(1:20), err_c(1:20), 'linewi', 2)
+ylim([0 12E6]);
+ylabel('|\lambda|')
+title('Eigenvalue Spectrum, Cropped')
+% subplot(2,1,2);
+% semilogy(eigvals_c(1:20), 'linewi', 2)
+% ylim([0 10E7]);
+% ylabel('|\lambda|')
+
+%% Perform a singular value decomposition on the uncropped images
+
+[U_uc,S_uc,V_st_uc] = svd(A_uncropped);
+
+% U represents
+% S represents 
+% V_st represents 
+
+% Plot the first few columns of U
+figure(3); 
+for i = 1:8
+    col = U_uc(:, i); 
+    new_image = reshape(col, [dim1, dim2]); 
+    subplot(2,4,i);
+    pcolor(flip(new_image)), shading interp, colormap gray
+end 
+%suptitle('Eigenfaces, Uncropped')
+
+%% PCA analysis- uncropped
+
+% Calculated SVD on the covariance matrix
+
+[~,~,Spcau] = pca(A_uncropped);
+eigvals_uc = Spcau;
+
+N_st = dim1*dim2;
+%N_st = trace(C_uc)^2/trace(C_uc.^2);
+
+% Plot the eigenvalue spectrum
+err_uc = eigvals_uc*sqrt((2/N_st));
+
+figure(2);
+subplot(2,1,2);
+errorbar(eigvals_uc(1:20), err_uc(1:20), 'linewi', 2)
+ylim([0 12E6])
+ylabel('|\lambda|')
+title('Eigenvalue Spectrum, Uncropped')
+% subplot(2,1,2);
+% semilogy(eigvals_uc(1:20), 'linewi', 2)
+% ylim([0 10E7]);
+% ylabel('|\lambda|')
+
+%% Rank-based Reconstructions- uncropped 
+figure();
+count = 1;
+r = [5 10 20 100 500 700];
+for ri= 1:length(r) % Truncation value
+    face = 42;
+     Xapprox_c  = U_c(:,1:r(ri)) * S_c(1:r(ri),1:r(ri)) * V_st_c(:,1:r(ri))';
+     Xapprox_uc = U_uc(:,1:r(ri))*S_uc(1:r(ri),1:r(ri))*V_st_uc(:,1:r(ri))'; % Approx. image
+    face_c = reshape(Xapprox_c(:,face), [dim1, dim2]);
+    face_uc = reshape(Xapprox_uc(:,face),[dim1,dim2]);
+    subplot(2,length(r),count)
+    imagesc(face_c), axis off, colormap gray;
+    title(['r=',num2str(r(ri),'%d') ]);
+    subplot(2,length(r), count+length(r))
+    imagesc(face_uc), axis off, colormap gray;
+    count = count + 1;
+end 
+
+
+
+        
+##### SOURCE END #####
+--></body></html>

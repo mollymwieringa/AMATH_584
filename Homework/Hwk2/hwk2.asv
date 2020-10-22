@@ -140,19 +140,19 @@ title('Eigenvalue Spectrum, Uncropped')
 %% Rank-based Reconstructions- uncropped 
 figure();
 count = 1;
-r = [5 10 20 100 500 700];
-for ri= 1:length(r) % Truncation value
-    face = 42;
-     Xapprox_c  = U_c(:,1:r(ri)) * S_c(1:r(ri),1:r(ri)) * V_st_c(:,1:r(ri))';
-     Xapprox_uc = U_uc(:,1:r(ri))*S_uc(1:r(ri),1:r(ri))*V_st_uc(:,1:r(ri))'; % Approx. image
-    face_c = reshape(Xapprox_c(:,face), [dim1, dim2]);
-    face_uc = reshape(Xapprox_uc(:,face),[dim1,dim2]);
-    subplot(2,length(r),count)
-    imagesc(face_c), axis off, colormap gray;
-    title(['r=',num2str(r(ri),'%d') ]);
-    subplot(2,length(r), count+length(r))
-    imagesc(face_uc), axis off, colormap gray;
-    count = count + 1;
+for r= 500 %[2 5 10 15 20] % Truncation value
+    face = 8;
+     Xapprox_c  = U_c(:,1:r) * S_c(1:r,1:r) * V_st_c(:,1:r)';
+     Xapprox_uc = U_uc(:,1:r)*S_uc(1:r,1:r)*V_st_uc(:,1:r)'; % Approx. image
+    face_c = reshape(Xapprox_c(face,:), [dim1, dim2]);
+    face_uc = reshape(Xapprox_uc(face,:)
+    subplot(2,1,count)
+    imagesc(Xapprox_c), axis off
+    title(['r=',num2str(r,'%d') ]);
+    subplot(2,1, count+1)
+    imagesc(Xapprox_uc), axis off
+    title(['r=',num2str(r,'%d') ]);
+    count = count + 2;
 end 
 
 
